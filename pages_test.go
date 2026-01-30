@@ -146,6 +146,51 @@ func TestPagesService_Create_BadRequest(t *testing.T) {
 	}
 }
 
+func TestPagesService_Delete(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "DELETE" {
+			t.Errorf("method = %s, want DELETE", r.Method)
+		}
+		if r.URL.Path != "/api/pages/10" {
+			t.Errorf("path = %s, want /api/pages/10", r.URL.Path)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	err := c.Pages.Delete(context.Background(), 10)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestPagesService_Delete_NotFound(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]any{
+			"error": map[string]string{"message": "Page not found"},
+		})
+	})
+
+	err := c.Pages.Delete(context.Background(), 999)
+	if !errors.Is(err, ErrNotFound) {
+		t.Errorf("expected ErrNotFound, got %v", err)
+	}
+}
+
+func TestPagesService_Delete_Forbidden(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(map[string]any{
+			"error": map[string]string{"message": "Permission denied"},
+		})
+	})
+
+	err := c.Pages.Delete(context.Background(), 10)
+	if !errors.Is(err, ErrForbidden) {
+		t.Errorf("expected ErrForbidden, got %v", err)
+	}
+}
+
 func TestPagesService_ExportMarkdown(t *testing.T) {
 	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/api/pages/5/export/markdown" {

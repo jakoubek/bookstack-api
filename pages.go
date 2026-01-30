@@ -56,6 +56,11 @@ func (s *PagesService) Update(ctx context.Context, id int, req *PageUpdateReques
 	return &page, nil
 }
 
+// Delete deletes a page by ID.
+func (s *PagesService) Delete(ctx context.Context, id int) error {
+	return s.client.do(ctx, "DELETE", fmt.Sprintf("/api/pages/%d", id), nil, nil)
+}
+
 // ExportMarkdown exports a page as markdown.
 func (s *PagesService) ExportMarkdown(ctx context.Context, id int) ([]byte, error) {
 	return s.client.doRaw(ctx, "GET", fmt.Sprintf("/api/pages/%d/export/markdown", id))
