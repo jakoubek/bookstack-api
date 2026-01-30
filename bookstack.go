@@ -31,11 +31,12 @@ type Client struct {
 	httpClient  *http.Client
 
 	// Service instances
-	Books    *BooksService
-	Pages    *PagesService
-	Chapters *ChaptersService
-	Shelves  *ShelvesService
-	Search   *SearchService
+	Attachments *AttachmentsService
+	Books       *BooksService
+	Chapters    *ChaptersService
+	Pages       *PagesService
+	Search      *SearchService
+	Shelves     *ShelvesService
 }
 
 // NewClient creates a new Bookstack API client.
@@ -70,11 +71,12 @@ func NewClient(cfg Config) (*Client, error) {
 	}
 
 	// Initialize services
+	c.Attachments = &AttachmentsService{client: c}
 	c.Books = &BooksService{client: c}
-	c.Pages = &PagesService{client: c}
 	c.Chapters = &ChaptersService{client: c}
-	c.Shelves = &ShelvesService{client: c}
+	c.Pages = &PagesService{client: c}
 	c.Search = &SearchService{client: c}
+	c.Shelves = &ShelvesService{client: c}
 
 	return c, nil
 }

@@ -79,6 +79,34 @@ type PageUpdateRequest struct {
 	Markdown string `json:"markdown,omitempty"`
 }
 
+// Attachment represents a Bookstack attachment.
+type Attachment struct {
+	ID         int       `json:"id"`
+	Name       string    `json:"name"`
+	Extension  string    `json:"extension"`
+	UploadedTo int       `json:"uploaded_to"`
+	External   bool      `json:"external"`
+	Order      int       `json:"order"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	CreatedBy  int       `json:"created_by"`
+	UpdatedBy  int       `json:"updated_by"`
+	Content    string    `json:"content,omitempty"`
+}
+
+// AttachmentCreateRequest contains fields for creating an attachment.
+type AttachmentCreateRequest struct {
+	Name       string `json:"name"`
+	UploadedTo int    `json:"uploaded_to"`
+	Link       string `json:"link,omitempty"`
+}
+
+// AttachmentUpdateRequest contains fields for updating an attachment.
+type AttachmentUpdateRequest struct {
+	Name string `json:"name,omitempty"`
+	Link string `json:"link,omitempty"`
+}
+
 // SearchResult represents a search result from Bookstack.
 type SearchResult struct {
 	Type      string  `json:"type"` // "page", "chapter", "book", or "shelf"
