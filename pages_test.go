@@ -76,6 +76,76 @@ func TestPagesService_Get_NotFound(t *testing.T) {
 	}
 }
 
+func TestPagesService_Create(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Errorf("method = %s, want POST", r.Method)
+		}
+		if r.URL.Path != "/api/pages" {
+			t.Errorf("path = %s, want /api/pages", r.URL.Path)
+		}
+		var body map[string]any
+		json.NewDecoder(r.Body).Decode(&body)
+		if body["name"] != "New Page" {
+			t.Errorf("name = %v, want New Page", body["name"])
+		}
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]any{
+			"id": 10, "name": "New Page", "book_id": 1,
+		})
+	})
+
+	page, err := c.Pages.Create(context.Background(), &PageCreateRequest{
+		BookID: 1,
+		Name:   "New Page",
+		HTML:   "<p>Content</p>",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if page.ID != 10 {
+		t.Errorf("ID = %d, want 10", page.ID)
+	}
+}
+
+func TestPagesService_Update(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "PUT" {
+			t.Errorf("method = %s, want PUT", r.Method)
+		}
+		if r.URL.Path != "/api/pages/10" {
+			t.Errorf("path = %s, want /api/pages/10", r.URL.Path)
+		}
+		json.NewEncoder(w).Encode(map[string]any{
+			"id": 10, "name": "Updated Page",
+		})
+	})
+
+	page, err := c.Pages.Update(context.Background(), 10, &PageUpdateRequest{
+		Name: "Updated Page",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if page.Name != "Updated Page" {
+		t.Errorf("Name = %q, want %q", page.Name, "Updated Page")
+	}
+}
+
+func TestPagesService_Create_BadRequest(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]any{
+			"error": map[string]string{"message": "Validation failed"},
+		})
+	})
+
+	_, err := c.Pages.Create(context.Background(), &PageCreateRequest{Name: "No Book"})
+	if !errors.Is(err, ErrBadRequest) {
+		t.Errorf("expected ErrBadRequest, got %v", err)
+	}
+}
+
 func TestPagesService_ExportMarkdown(t *testing.T) {
 	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/api/pages/5/export/markdown" {

@@ -63,6 +63,22 @@ type Shelf struct {
 	OwnedBy     int       `json:"owned_by"`
 }
 
+// PageCreateRequest contains fields for creating a new page.
+type PageCreateRequest struct {
+	BookID    int    `json:"book_id"`
+	ChapterID int    `json:"chapter_id,omitempty"`
+	Name      string `json:"name"`
+	HTML      string `json:"html,omitempty"`
+	Markdown  string `json:"markdown,omitempty"`
+}
+
+// PageUpdateRequest contains fields for updating an existing page.
+type PageUpdateRequest struct {
+	Name     string `json:"name,omitempty"`
+	HTML     string `json:"html,omitempty"`
+	Markdown string `json:"markdown,omitempty"`
+}
+
 // SearchResult represents a search result from Bookstack.
 type SearchResult struct {
 	Type      string  `json:"type"` // "page", "chapter", "book", or "shelf"

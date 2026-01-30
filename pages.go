@@ -36,6 +36,26 @@ func (s *PagesService) Get(ctx context.Context, id int) (*Page, error) {
 	return &page, nil
 }
 
+// Create creates a new page.
+func (s *PagesService) Create(ctx context.Context, req *PageCreateRequest) (*Page, error) {
+	var page Page
+	err := s.client.do(ctx, "POST", "/api/pages", req, &page)
+	if err != nil {
+		return nil, err
+	}
+	return &page, nil
+}
+
+// Update updates an existing page.
+func (s *PagesService) Update(ctx context.Context, id int, req *PageUpdateRequest) (*Page, error) {
+	var page Page
+	err := s.client.do(ctx, "PUT", fmt.Sprintf("/api/pages/%d", id), req, &page)
+	if err != nil {
+		return nil, err
+	}
+	return &page, nil
+}
+
 // ExportMarkdown exports a page as markdown.
 func (s *PagesService) ExportMarkdown(ctx context.Context, id int) ([]byte, error) {
 	return s.client.doRaw(ctx, "GET", fmt.Sprintf("/api/pages/%d/export/markdown", id))
