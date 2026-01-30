@@ -3,6 +3,7 @@ package bookstack
 import (
 	"context"
 	"fmt"
+	"iter"
 )
 
 // BooksService handles operations on books.
@@ -18,6 +19,11 @@ func (s *BooksService) List(ctx context.Context, opts *ListOptions) ([]Book, err
 		return nil, err
 	}
 	return resp.Data, nil
+}
+
+// ListAll returns an iterator over all books, handling pagination automatically.
+func (s *BooksService) ListAll(ctx context.Context) iter.Seq2[Book, error] {
+	return listAll[Book](ctx, s.client, "/api/books")
 }
 
 // Get retrieves a single book by ID.

@@ -3,6 +3,7 @@ package bookstack
 import (
 	"context"
 	"fmt"
+	"iter"
 )
 
 // PagesService handles operations on pages.
@@ -18,6 +19,11 @@ func (s *PagesService) List(ctx context.Context, opts *ListOptions) ([]Page, err
 		return nil, err
 	}
 	return resp.Data, nil
+}
+
+// ListAll returns an iterator over all pages, handling pagination automatically.
+func (s *PagesService) ListAll(ctx context.Context) iter.Seq2[Page, error] {
+	return listAll[Page](ctx, s.client, "/api/pages")
 }
 
 // Get retrieves a single page by ID, including its content.
