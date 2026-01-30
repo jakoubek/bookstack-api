@@ -1,7 +1,9 @@
 package bookstack
 
 import (
+	"errors"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -37,7 +39,22 @@ type Client struct {
 }
 
 // NewClient creates a new Bookstack API client.
-func NewClient(cfg Config) *Client {
+// Returns an error if BaseURL, TokenID, or TokenSecret are empty.
+func NewClient(cfg Config) (*Client, error) {
+	var errs []string
+	if cfg.BaseURL == "" {
+		errs = append(errs, "BaseURL is required")
+	}
+	if cfg.TokenID == "" {
+		errs = append(errs, "TokenID is required")
+	}
+	if cfg.TokenSecret == "" {
+		errs = append(errs, "TokenSecret is required")
+	}
+	if len(errs) > 0 {
+		return nil, errors.New(strings.Join(errs, "; "))
+	}
+
 	httpClient := cfg.HTTPClient
 	if httpClient == nil {
 		httpClient = &http.Client{
@@ -46,7 +63,7 @@ func NewClient(cfg Config) *Client {
 	}
 
 	c := &Client{
-		baseURL:     cfg.BaseURL,
+		baseURL:     strings.TrimRight(cfg.BaseURL, "/"),
 		tokenID:     cfg.TokenID,
 		tokenSecret: cfg.TokenSecret,
 		httpClient:  httpClient,
@@ -59,5 +76,5 @@ func NewClient(cfg Config) *Client {
 	c.Shelves = &ShelvesService{client: c}
 	c.Search = &SearchService{client: c}
 
-	return c
+	return c, nil
 }
