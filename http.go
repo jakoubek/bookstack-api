@@ -77,6 +77,39 @@ func (c *Client) do(ctx context.Context, method, path string, body, result any) 
 	return nil
 }
 
+// doRaw executes an authenticated API request and returns the raw response body.
+// Used for export endpoints that return non-JSON content (markdown, PDF, etc.).
+func (c *Client) doRaw(ctx context.Context, method, path string) ([]byte, error) {
+	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, nil)
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
+	}
+
+	req.Header.Set("Authorization", fmt.Sprintf("Token %s:%s", c.tokenID, c.tokenSecret))
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("executing request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("reading response body: %w", err)
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		apiErr := &APIError{
+			StatusCode: resp.StatusCode,
+			Body:       string(body),
+			Message:    http.StatusText(resp.StatusCode),
+		}
+		return nil, apiErr
+	}
+
+	return body, nil
+}
+
 // listResponse wraps the common Bookstack list API response format.
 type listResponse[T any] struct {
 	Data  []T `json:"data"`

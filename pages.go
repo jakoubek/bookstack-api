@@ -35,3 +35,13 @@ func (s *PagesService) Get(ctx context.Context, id int) (*Page, error) {
 	}
 	return &page, nil
 }
+
+// ExportMarkdown exports a page as markdown.
+func (s *PagesService) ExportMarkdown(ctx context.Context, id int) ([]byte, error) {
+	return s.client.doRaw(ctx, "GET", fmt.Sprintf("/api/pages/%d/export/markdown", id))
+}
+
+// ExportPDF exports a page as PDF.
+func (s *PagesService) ExportPDF(ctx context.Context, id int) ([]byte, error) {
+	return s.client.doRaw(ctx, "GET", fmt.Sprintf("/api/pages/%d/export/pdf", id))
+}
