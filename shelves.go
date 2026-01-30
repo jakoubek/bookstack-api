@@ -1,6 +1,10 @@
 package bookstack
 
-import "context"
+import (
+	"context"
+	"fmt"
+	"iter"
+)
 
 // ShelvesService handles operations on shelves.
 type ShelvesService struct {
@@ -8,36 +12,26 @@ type ShelvesService struct {
 }
 
 // List returns a list of shelves with optional filtering.
-// TODO: Implement API call to GET /api/shelves
 func (s *ShelvesService) List(ctx context.Context, opts *ListOptions) ([]Shelf, error) {
-	// Placeholder for future implementation
-	return nil, nil
+	var resp listResponse[Shelf]
+	err := s.client.do(ctx, "GET", "/api/shelves"+opts.queryString(), nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Data, nil
+}
+
+// ListAll returns an iterator over all shelves, handling pagination automatically.
+func (s *ShelvesService) ListAll(ctx context.Context) iter.Seq2[Shelf, error] {
+	return listAll[Shelf](ctx, s.client, "/api/shelves")
 }
 
 // Get retrieves a single shelf by ID.
-// TODO: Implement API call to GET /api/shelves/{id}
 func (s *ShelvesService) Get(ctx context.Context, id int) (*Shelf, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Create creates a new shelf.
-// TODO: Implement API call to POST /api/shelves
-func (s *ShelvesService) Create(ctx context.Context, shelf *Shelf) (*Shelf, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Update updates an existing shelf.
-// TODO: Implement API call to PUT /api/shelves/{id}
-func (s *ShelvesService) Update(ctx context.Context, id int, shelf *Shelf) (*Shelf, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Delete deletes a shelf by ID.
-// TODO: Implement API call to DELETE /api/shelves/{id}
-func (s *ShelvesService) Delete(ctx context.Context, id int) error {
-	// Placeholder for future implementation
-	return nil
+	var shelf Shelf
+	err := s.client.do(ctx, "GET", fmt.Sprintf("/api/shelves/%d", id), nil, &shelf)
+	if err != nil {
+		return nil, err
+	}
+	return &shelf, nil
 }
