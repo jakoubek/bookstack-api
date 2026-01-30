@@ -1,6 +1,9 @@
 package bookstack
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // PagesService handles operations on pages.
 type PagesService struct {
@@ -8,36 +11,21 @@ type PagesService struct {
 }
 
 // List returns a list of pages with optional filtering.
-// TODO: Implement API call to GET /api/pages
 func (s *PagesService) List(ctx context.Context, opts *ListOptions) ([]Page, error) {
-	// Placeholder for future implementation
-	return nil, nil
+	var resp listResponse[Page]
+	err := s.client.do(ctx, "GET", "/api/pages"+opts.queryString(), nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Data, nil
 }
 
-// Get retrieves a single page by ID.
-// TODO: Implement API call to GET /api/pages/{id}
+// Get retrieves a single page by ID, including its content.
 func (s *PagesService) Get(ctx context.Context, id int) (*Page, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Create creates a new page.
-// TODO: Implement API call to POST /api/pages
-func (s *PagesService) Create(ctx context.Context, page *Page) (*Page, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Update updates an existing page.
-// TODO: Implement API call to PUT /api/pages/{id}
-func (s *PagesService) Update(ctx context.Context, id int, page *Page) (*Page, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Delete deletes a page by ID.
-// TODO: Implement API call to DELETE /api/pages/{id}
-func (s *PagesService) Delete(ctx context.Context, id int) error {
-	// Placeholder for future implementation
-	return nil
+	var page Page
+	err := s.client.do(ctx, "GET", fmt.Sprintf("/api/pages/%d", id), nil, &page)
+	if err != nil {
+		return nil, err
+	}
+	return &page, nil
 }
