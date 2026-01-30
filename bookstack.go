@@ -1,3 +1,18 @@
+// Package bookstack provides a Go client for the BookStack REST API.
+//
+// Create a client with NewClient and use the service fields (Books, Pages, etc.)
+// to interact with the API:
+//
+//	client, err := bookstack.NewClient(bookstack.Config{
+//	    BaseURL:     "https://docs.example.com",
+//	    TokenID:     os.Getenv("BOOKSTACK_TOKEN_ID"),
+//	    TokenSecret: os.Getenv("BOOKSTACK_TOKEN_SECRET"),
+//	})
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//
+//	books, err := client.Books.List(ctx, nil)
 package bookstack
 
 import (
