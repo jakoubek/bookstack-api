@@ -1,5 +1,10 @@
 # bookstack-api
 
+[![Mirror on GitHub](https://img.shields.io/badge/mirror-GitHub-blue)](https://github.com/jakoubek/bookstack-api)
+[![Go Reference](https://pkg.go.dev/badge/code.beautifulmachines.dev/jakoubek/bookstack-api.svg)](https://pkg.go.dev/code.beautifulmachines.dev/jakoubek/bookstack-api)
+[![Go Report Card](https://goreportcard.com/badge/code.beautifulmachines.dev/jakoubek/bookstack-api)](https://goreportcard.com/report/code.beautifulmachines.dev/jakoubek/bookstack-api)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A Go client library for the [BookStack](https://www.bookstackapp.com/) REST API. Zero external dependencies.
 
 ## Installation
