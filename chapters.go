@@ -1,6 +1,10 @@
 package bookstack
 
-import "context"
+import (
+	"context"
+	"fmt"
+	"iter"
+)
 
 // ChaptersService handles operations on chapters.
 type ChaptersService struct {
@@ -8,36 +12,26 @@ type ChaptersService struct {
 }
 
 // List returns a list of chapters with optional filtering.
-// TODO: Implement API call to GET /api/chapters
 func (s *ChaptersService) List(ctx context.Context, opts *ListOptions) ([]Chapter, error) {
-	// Placeholder for future implementation
-	return nil, nil
+	var resp listResponse[Chapter]
+	err := s.client.do(ctx, "GET", "/api/chapters"+opts.queryString(), nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Data, nil
+}
+
+// ListAll returns an iterator over all chapters, handling pagination automatically.
+func (s *ChaptersService) ListAll(ctx context.Context) iter.Seq2[Chapter, error] {
+	return listAll[Chapter](ctx, s.client, "/api/chapters")
 }
 
 // Get retrieves a single chapter by ID.
-// TODO: Implement API call to GET /api/chapters/{id}
 func (s *ChaptersService) Get(ctx context.Context, id int) (*Chapter, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Create creates a new chapter.
-// TODO: Implement API call to POST /api/chapters
-func (s *ChaptersService) Create(ctx context.Context, chapter *Chapter) (*Chapter, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Update updates an existing chapter.
-// TODO: Implement API call to PUT /api/chapters/{id}
-func (s *ChaptersService) Update(ctx context.Context, id int, chapter *Chapter) (*Chapter, error) {
-	// Placeholder for future implementation
-	return nil, nil
-}
-
-// Delete deletes a chapter by ID.
-// TODO: Implement API call to DELETE /api/chapters/{id}
-func (s *ChaptersService) Delete(ctx context.Context, id int) error {
-	// Placeholder for future implementation
-	return nil
+	var chapter Chapter
+	err := s.client.do(ctx, "GET", fmt.Sprintf("/api/chapters/%d", id), nil, &chapter)
+	if err != nil {
+		return nil, err
+	}
+	return &chapter, nil
 }
