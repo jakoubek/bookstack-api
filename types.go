@@ -107,6 +107,30 @@ type AttachmentUpdateRequest struct {
 	Link string `json:"link,omitempty"`
 }
 
+// Comment represents a Bookstack comment on a page.
+type Comment struct {
+	ID        int       `json:"id"`
+	PageID    int       `json:"page_id"`
+	ParentID  int       `json:"parent_id,omitempty"`
+	HTML      string    `json:"html"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	CreatedBy int       `json:"created_by"`
+	UpdatedBy int       `json:"updated_by"`
+}
+
+// CommentCreateRequest contains fields for creating a comment.
+type CommentCreateRequest struct {
+	PageID   int    `json:"page_id"`
+	ParentID int    `json:"parent_id,omitempty"`
+	HTML     string `json:"html"`
+}
+
+// CommentUpdateRequest contains fields for updating a comment.
+type CommentUpdateRequest struct {
+	HTML string `json:"html"`
+}
+
 // SearchResult represents a search result from Bookstack.
 type SearchResult struct {
 	Type      string  `json:"type"` // "page", "chapter", "book", or "shelf"

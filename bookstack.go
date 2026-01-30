@@ -34,6 +34,7 @@ type Client struct {
 	Attachments *AttachmentsService
 	Books       *BooksService
 	Chapters    *ChaptersService
+	Comments    *CommentsService
 	Pages       *PagesService
 	Search      *SearchService
 	Shelves     *ShelvesService
@@ -74,6 +75,7 @@ func NewClient(cfg Config) (*Client, error) {
 	c.Attachments = &AttachmentsService{client: c}
 	c.Books = &BooksService{client: c}
 	c.Chapters = &ChaptersService{client: c}
+	c.Comments = &CommentsService{client: c}
 	c.Pages = &PagesService{client: c}
 	c.Search = &SearchService{client: c}
 	c.Shelves = &ShelvesService{client: c}
