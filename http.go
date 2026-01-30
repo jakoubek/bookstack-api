@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 // do executes an authenticated API request and unmarshals the response.
@@ -75,10 +77,40 @@ func (c *Client) do(ctx context.Context, method, path string, body, result any) 
 	return nil
 }
 
+// listResponse wraps the common Bookstack list API response format.
+type listResponse[T any] struct {
+	Data  []T `json:"data"`
+	Total int `json:"total"`
+}
+
 // ListOptions contains common options for list operations.
 type ListOptions struct {
 	Count  int               // Max items per page (default 100, max 500)
 	Offset int               // Offset for pagination
 	Sort   string            // Sort field (e.g., "name", "-created_at")
 	Filter map[string]string // Filters (e.g., {"name": "value"})
+}
+
+// queryString builds a URL query string from ListOptions.
+func (o *ListOptions) queryString() string {
+	if o == nil {
+		return ""
+	}
+	v := url.Values{}
+	if o.Count > 0 {
+		v.Set("count", strconv.Itoa(o.Count))
+	}
+	if o.Offset > 0 {
+		v.Set("offset", strconv.Itoa(o.Offset))
+	}
+	if o.Sort != "" {
+		v.Set("sort", o.Sort)
+	}
+	for key, val := range o.Filter {
+		v.Set("filter["+key+"]", val)
+	}
+	if len(v) == 0 {
+		return ""
+	}
+	return "?" + v.Encode()
 }
