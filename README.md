@@ -17,7 +17,6 @@ import (
     "context"
     "fmt"
     "log"
-    "os"
 
     bookstack "code.beautifulmachines.dev/jakoubek/bookstack-api"
 )
