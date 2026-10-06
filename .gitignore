@@ -33,4 +33,3 @@ vendor/
 # Temporary files
 *.tmp
 tmp/
-.beads/export-state/
