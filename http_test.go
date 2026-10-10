@@ -28,10 +28,7 @@ func testClient(t *testing.T, handler http.HandlerFunc) *Client {
 func TestDo_AuthHeader(t *testing.T) {
 	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
 		got := r.Header.Get("Authorization")
-		// BookStack expects the token secret BEFORE the id, matching the
-		// ApiTokenGuard which splits on ':' and treats the first segment
-		// as the secret and the second as the id.
-		want := "Token ***"
+		want := "Token test-id:test-secret"
 		if got != want {
 			t.Errorf("Authorization = %q, want %q", got, want)
 		}

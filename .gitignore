@@ -33,3 +33,7 @@ vendor/
 # Temporary files
 *.tmp
 tmp/
+.beads/export-state/
+
+# Local environment — never commit API tokens
+.env

@@ -53,14 +53,12 @@ func main() {
 
 BookStack uses token-based authentication. Create an API token in your BookStack user profile under **API Tokens**.
 
-The `Authorization` header must be formatted as `Token ***` — **secret first, then id** — matching the format expected by BookStack's `ApiTokenGuard` (which splits the header on `:` and treats the first segment as the secret and the second as the id):
+Set the token ID and secret as environment variables:
 
 ```bash
 export BOOKSTACK_TOKEN_ID="your-token-id"
 export BOOKSTACK_TOKEN_SECRET="your-token-secret"
 ```
-
-The client builds the header as `Token *** — do not swap the values manually.
 
 ## Usage
 
@@ -152,6 +150,30 @@ if errors.Is(err, bookstack.ErrNotFound) {
 
 - Go 1.23+
 - BookStack instance with API enabled
+
+## Issue Tracking
+
+This repository uses [Beads](https://github.com/steveyegge/beads) (bd) for issue tracking — issues live in the repo at `.beads/` alongside the code.
+
+Install:
+
+```bash
+# macOS / Linux (Homebrew)
+brew install beads
+
+# Or build from source
+go install github.com/steveyegge/beads/cmd/bd@latest
+```
+
+Then run `bd onboard` to get started.
+
+```bash
+bd ready              # Find available work
+bd show <id>          # View issue details
+bd update <id> --status in_progress  # Claim work
+bd close <id>         # Complete work
+bd sync               # Sync with git remote
+```
 
 ## License
 
