@@ -175,6 +175,21 @@ bd close <id>         # Complete work
 bd sync               # Sync with git remote
 ```
 
+## Compatibility
+
+Tested against BookStack **26.05.5**.
+
+The library's `UserRef` type handles the dual-shape response that BookStack
+returns for `created_by`, `updated_by`, and `owned_by` fields:
+
+- **List endpoints** (`GET /api/books`, `GET /api/pages`, …): plain integer, e.g. `1`
+- **Detail endpoints** (`GET /api/books/{id}`, `POST`, `PUT`): expanded object
+  `{"id": 1, "name": "Aldo", "slug": "aldo"}`
+
+Also handles nullable `chapter_id` on pages that are directly in a book (not in a chapter).
+
+If you are using a different BookStack version, the API response shape may differ.
+
 ## License
 
 See [LICENSE](LICENSE) file.
