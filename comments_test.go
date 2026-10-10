@@ -48,13 +48,15 @@ func TestCommentsService_Create(t *testing.T) {
 		}
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(map[string]any{
-			"id": 2, "page_id": 5, "html": "<p>New</p>",
-		})
+					"id": 2, "page_id": 5, "commentable_id": 5, "commentable_type": "page", "html": "<p>New</p>",
+				})
 	})
 
 	comment, err := c.Comments.Create(context.Background(), &CommentCreateRequest{
-		PageID: 5,
-		HTML:   "<p>New</p>",
+		PageID:          5,
+		CommentableID:   5,
+		CommentableType: "page",
+		HTML:            "<p>New</p>",
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

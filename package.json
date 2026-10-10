@@ -1,0 +1,13 @@
+{
+  "name": "bookstack-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "precommit": "go vet ./... && go build ./... && go test ./... -short"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0"
+  }
+}
