@@ -93,7 +93,7 @@ if errors.Is(err, bookstack.ErrNotFound) {
 - **Zero external dependencies** - Only Go standard library
 - **Go 1.21+** required
 - **No caching/rate-limiting** - Caller responsibility
-- **Token auth** via `Authorization: Token <id>:<secret>` header
+- **Token auth** via `Authorization: Token *** header (secret first, then id)
 - **Bookstack hierarchy**: Shelf → Book → Chapter → Page
 
 ## Bookstack API Reference

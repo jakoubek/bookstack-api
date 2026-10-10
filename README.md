@@ -53,12 +53,14 @@ func main() {
 
 BookStack uses token-based authentication. Create an API token in your BookStack user profile under **API Tokens**.
 
-Set the token ID and secret as environment variables:
+The `Authorization` header must be formatted as `Token ***` — **secret first, then id** — matching the format expected by BookStack's `ApiTokenGuard` (which splits the header on `:` and treats the first segment as the secret and the second as the id):
 
 ```bash
 export BOOKSTACK_TOKEN_ID="your-token-id"
 export BOOKSTACK_TOKEN_SECRET="your-token-secret"
 ```
+
+The client builds the header as `Token *** — do not swap the values manually.
 
 ## Usage
 
