@@ -4,7 +4,7 @@
 // to interact with the API:
 //
 //	client, err := bookstack.NewClient(bookstack.Config{
-//	    BaseURL:     "https://docs.example.com",
+//	    BaseURL:     os.Getenv("BOOKSTACK_API_URL"),
 //	    TokenID:     os.Getenv("BOOKSTACK_TOKEN_ID"),
 //	    TokenSecret: os.Getenv("BOOKSTACK_TOKEN_SECRET"),
 //	})

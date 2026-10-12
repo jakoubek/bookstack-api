@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+# Husky v9+ compatible pre-commit hook
+
+echo "Running pre-commit checks..."
+
+# Run go vet
+echo "→ go vet ./..."
+if ! go vet ./...; then
+    echo "✗ go vet failed"
+    exit 1
+fi
+echo "✓ go vet passed"
+
+# Run go build
+echo "→ go build ./..."
+if ! go build ./...; then
+    echo "✗ go build failed"
+    exit 1
+fi
+echo "✓ go build passed"
+
+# Run go test with -short flag (skips live tests)
+echo "→ go test ./... -short"
+if ! go test ./... -short; then
+    echo "✗ go test -short failed"
+    exit 1
+fi
+echo "✓ go test -short passed"
+
+echo "All pre-commit checks passed!"
