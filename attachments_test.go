@@ -1,9 +1,11 @@
 package bookstack
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"testing"
 )
@@ -103,6 +105,46 @@ func TestAttachmentsService_Delete(t *testing.T) {
 	err := c.Attachments.Delete(context.Background(), 1)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestAttachmentsService_CreateFileUpload(t *testing.T) {
+	c := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Errorf("method = %s, want POST", r.Method)
+		}
+		if r.URL.Path != "/api/attachments" {
+			t.Errorf("path = %s, want /api/attachments", r.URL.Path)
+		}
+		// Verify multipart content type
+		ct := r.Header.Get("Content-Type")
+		if ct == "" || ct[:30] != "multipart/form-data; boundary=" {
+			t.Errorf("Content-Type = %q, want multipart/form-data", ct)
+		}
+		// Consume body so test doesn't hang
+		io.Copy(io.Discard, r.Body)
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]any{
+			"id": 3, "name": "test.txt", "external": false,
+		})
+	})
+
+	// Create a test file content
+	fileContent := []byte("hello world")
+	a, err := c.Attachments.Create(context.Background(), &AttachmentCreateRequest{
+		Name:       "test.txt",
+		UploadedTo: 5,
+		File:       bytes.NewReader(fileContent),
+		Filename:   "test.txt",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if a.ID != 3 {
+		t.Errorf("ID = %d, want 3", a.ID)
+	}
+	if a.Name != "test.txt" {
+		t.Errorf("Name = %q", a.Name)
 	}
 }
 

@@ -110,6 +110,56 @@ func (c *Client) doRaw(ctx context.Context, method, path string) ([]byte, error)
 	return body, nil
 }
 
+// doMultipart executes an authenticated multipart/form-data request.
+// Used for file uploads where the body is not JSON.
+func (c *Client) doMultipart(ctx context.Context, method, path string, body *bytes.Buffer, contentType string, result any) error {
+	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, body)
+	if err != nil {
+		return fmt.Errorf("creating request: %w", err)
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Token %s:%s", c.tokenID, c.tokenSecret))
+	req.Header.Set("Content-Type", contentType)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("executing request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("reading response body: %w", err)
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		apiErr := &APIError{
+			StatusCode: resp.StatusCode,
+			Body:       string(respBody),
+		}
+		var errResp struct {
+			Error struct {
+				Code    string `json:"code"`
+				Message string `json:"message"`
+			} `json:"error"`
+		}
+		if json.Unmarshal(respBody, &errResp) == nil && errResp.Error.Message != "" {
+			apiErr.Code = errResp.Error.Code
+			apiErr.Message = errResp.Error.Message
+		} else {
+			apiErr.Message = http.StatusText(resp.StatusCode)
+		}
+		return apiErr
+	}
+
+	if result != nil && len(respBody) > 0 {
+		if err := json.Unmarshal(respBody, result); err != nil {
+			return fmt.Errorf("unmarshaling response: %w", err)
+		}
+	}
+	return nil
+}
+
 // listResponse wraps the common Bookstack list API response format.
 type listResponse[T any] struct {
 	Data  []T `json:"data"`

@@ -33,3 +33,18 @@ vendor/
 # Temporary files
 *.tmp
 tmp/
+.beads/export-state/
+
+# Local environment — never commit API tokens
+.env
+
+# Node / Husky
+node_modules/
+package-lock.json
+
+# IDE / tool directories
+.agents/
+.claude/
+.codex/
+.cursor/
+.beads.gate.lock

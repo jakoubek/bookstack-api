@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "bookstack_api",
+  "project_id": "044cfe8f-207f-401e-8b01-9e38f72b475c"
+}

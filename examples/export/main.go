@@ -24,7 +24,7 @@ func main() {
 	format := os.Args[2]
 
 	client, err := bookstack.NewClient(bookstack.Config{
-		BaseURL:     os.Getenv("BOOKSTACK_URL"),
+		BaseURL:     os.Getenv("BOOKSTACK_API_URL"),
 		TokenID:     os.Getenv("BOOKSTACK_TOKEN_ID"),
 		TokenSecret: os.Getenv("BOOKSTACK_TOKEN_SECRET"),
 	})
